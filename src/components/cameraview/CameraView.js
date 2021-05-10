@@ -1,9 +1,44 @@
 import React, {PureComponent} from 'react';
-import {TouchableOpacity, View, StyleSheet, Text} from 'react-native';
+import {TouchableOpacity, View, StyleSheet, Text, Alert} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import CameraRoll from '@react-native-community/cameraroll';
+import Geolocation from '@react-native-community/geolocation';
 
 class CameraView extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.takePicture = this.takePicture.bind(this);
+  }
+
+  state = {
+    initialPosition: 'unknown',
+  };
+
+  componentDidMount() {
+    Geolocation.getCurrentPosition(
+      position => {
+        const initialPosition = JSON.stringify(position);
+        this.setState({initialPosition});
+      },
+      error => Alert.alert('Error', JSON.stringify(error)),
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+    );
+  }
+
+  takePicture = async () => {
+    if (this.camera) {
+      const options = {
+        quality: 0.5,
+        base64: true,
+        exif: true,
+        location: this.state.initialPosition,
+      };
+      const data = await this.camera.takePictureAsync(options);
+      CameraRoll.save(data.uri);
+      this.props.navigation.navigate('Home', {photo: data.exif.DateTime});
+    }
+  };
+
   render() {
     return (
       <RNCamera
@@ -15,27 +50,13 @@ class CameraView extends PureComponent {
         exif={true}
         saveToCameraRoll={true}>
         <View style={styles.view}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={this.takePicture.bind(this)}>
+          <TouchableOpacity style={styles.button} onPress={this.takePicture}>
             <Text>Take Picture</Text>
           </TouchableOpacity>
         </View>
       </RNCamera>
     );
   }
-
-  takePicture = async () => {
-    if (this.camera) {
-      const options = {
-        quality: 0.5,
-        base64: true,
-        exif: true,
-      };
-      const data = await this.camera.takePictureAsync(options);
-      CameraRoll.save(data.uri, {type: 'photo', data});
-    }
-  };
 }
 
 const styles = StyleSheet.create({

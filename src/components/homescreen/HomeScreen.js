@@ -11,7 +11,7 @@ import {
 import {CameraButton} from '../../components';
 import CameraRoll from '@react-native-community/cameraroll';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({route, navigation}) => {
   const [data, setData] = useState('');
 
   const getPhotos = () => {
@@ -37,21 +37,20 @@ const HomeScreen = ({navigation}) => {
           message: 'ReactNativeForYou would like to access your photos!',
         },
       );
-      if (result !== 'granted') {
+      if (result === 'granted') {
+        getPhotos();
+      } else {
         console.log('Access to pictures was denied');
         return;
-      } else {
-        getPhotos();
       }
-    } else {
-      getPhotos();
     }
   };
 
   useEffect(() => {
     askPermission();
+    console.log(askPermission);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [route.params?.photo]);
 
   return (
     <>
