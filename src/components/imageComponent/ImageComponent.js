@@ -3,9 +3,10 @@ import {StyleSheet, Text, Image, View, Button, Share} from 'react-native';
 
 const ImageComponent = ({route}) => {
   const {item} = route.params;
+
   const shareOptions = {
     message: 'See my new photo, taken with EurekaLabs!!',
-    url: 'data:image/jpeg;base64,<item.node.image.uri>',
+    url: item.node.image.uri,
   };
 
   return (
@@ -14,7 +15,10 @@ const ImageComponent = ({route}) => {
         <Image style={styles.image} source={{uri: item.node.image.uri}} />
       </View>
       <View style={styles.viewText}>
-        <Text>Position: {item.node.location || 'UNKNOWN'}</Text>
+        <Text>
+          Position: LAT:{item.node.location.latitude},LONG:
+          {item.node.location.longitude}
+        </Text>
       </View>
       <Button title="Share" onPress={() => Share.share(shareOptions)} />
     </>

@@ -48,7 +48,6 @@ const HomeScreen = ({route, navigation}) => {
 
   useEffect(() => {
     askPermission();
-    console.log(askPermission);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params?.photo]);
 

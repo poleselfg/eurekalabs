@@ -11,14 +11,18 @@ class CameraView extends PureComponent {
   }
 
   state = {
-    initialPosition: 'unknown',
+    GPSLat: '',
+    GPSLong: '',
   };
 
   componentDidMount() {
     Geolocation.getCurrentPosition(
       position => {
-        const initialPosition = JSON.stringify(position);
-        this.setState({initialPosition});
+        const initialPosition = position;
+        const GPSLat = initialPosition.coords.latitude;
+        this.setState({GPSLat});
+        const GPSLong = initialPosition.coords.longitude;
+        this.setState({GPSLong});
       },
       error => Alert.alert('Error', JSON.stringify(error)),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
@@ -29,9 +33,11 @@ class CameraView extends PureComponent {
     if (this.camera) {
       const options = {
         quality: 0.5,
-        base64: true,
         exif: true,
-        location: this.state.initialPosition,
+        writeExif: {
+          GPSLatitude: this.state.GPSLat,
+          GPSLongitude: this.state.GPSLong,
+        },
       };
       const data = await this.camera.takePictureAsync(options);
       CameraRoll.save(data.uri);
