@@ -1,5 +1,9 @@
 # EurekaLabs
 
+
+
+<img src="./demo-min.gif" width="300" height="auto"/>
+
 React Native app (no expo use) to take pictures, and see their location.
 
 ## Setup
