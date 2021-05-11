@@ -48,7 +48,6 @@ const HomeScreen = ({route, navigation}) => {
 
   useEffect(() => {
     askPermission();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params?.photo]);
 
   return (
@@ -57,7 +56,7 @@ const HomeScreen = ({route, navigation}) => {
         <FlatList
           data={data}
           numColumns={3}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={item => item.node.timestamp}
           renderItem={({item}) => (
             <TouchableHighlight
               onPress={() => navigation.navigate('ImageComponent', {item})}
