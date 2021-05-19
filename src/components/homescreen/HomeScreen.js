@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export {HomeScreen};
+export default React.memo(HomeScreen);
